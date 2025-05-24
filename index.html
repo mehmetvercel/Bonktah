@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BonkTah Hub</title>
-    <link rel="icon" type="" href="bonk.jpg">
+    <title>BonkTah Hub - Where AI Meets Meme Culture</title>
+    <link rel="icon" type="image/jpeg" href="bonk.jpg">
     <style>
         * {
             margin: 0;
@@ -21,6 +21,22 @@
             align-items: center;
             color: white;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 123, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 179, 102, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 149, 0, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
         }
 
         .header {
@@ -30,38 +46,38 @@
             align-items: center;
             padding: 20px 40px;
             z-index: 10;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 20px;
+            gap: 12px;
+            font-size: 24px;
             font-weight: bold;
+            letter-spacing: -0.5px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .logo-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .updates-btn {
-            background: rgba(0, 0, 0, 0.8);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            color: white;
-            cursor: pointer;
-            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
 
-        .updates-btn:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: translateY(-2px);
+        .logo:hover .logo-icon {
+            transform: rotate(-5deg);
+            border-color: rgba(255, 255, 255, 0.8);
         }
 
         .main-content {
@@ -74,187 +90,231 @@
             padding: 40px 20px;
             max-width: 1200px;
             width: 100%;
+            z-index: 2;
+            position: relative;
         }
 
         .hero-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: bold;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: -0.02em;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: -1px;
+            background: linear-gradient(to bottom, #fff, rgba(255, 255, 255, 0.9));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
         }
 
         .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 60px;
-            opacity: 0.9;
+            font-size: 1.8rem;
+            margin-bottom: 80px;
+            opacity: 0.95;
             font-weight: 300;
+            max-width: 600px;
+            line-height: 1.4;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 0.95;
+                transform: translateY(0);
+            }
         }
 
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
         }
 
         .option-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 20px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 30px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             text-decoration: none;
             color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option-item:hover::before {
+            opacity: 1;
         }
 
         .option-item:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .option-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: white;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .option-item:hover .option-icon {
-            transform: scale(1.1);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .option-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 5px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .option-description {
-            font-size: 0.9rem;
-            opacity: 0.8;
+            font-size: 1rem;
+            opacity: 0.85;
             text-align: center;
-            line-height: 1.4;
+            line-height: 1.5;
+            max-width: 250px;
         }
 
         .navigation-links {
             display: flex;
-            gap: 30px;
+            gap: 25px;
             margin-bottom: 40px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .nav-link {
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
+            padding: 14px 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
             color: white;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .nav-link:hover::before {
+            width: 120%;
+            height: 120%;
         }
 
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .stats {
-            font-size: 1.2rem;
-            font-weight: 500;
-            opacity: 0.9;
-            margin-top: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 15px 20px;
-            }
-            
-            .options-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 20px;
-            }
-            
-            .navigation-links {
-                gap: 15px;
-            }
-            
-            .nav-link {
-                padding: 10px 18px;
-                font-size: 0.9rem;
-            }
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .floating-elements {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
             overflow: hidden;
+            z-index: 0;
         }
 
         .bonk-gif {
             position: absolute;
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: linear-gradient(45deg, #ff6b35, #f7931e);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 1.8rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
             animation: fly 8s linear infinite;
         }
 
         .bonk-gif:nth-child(1) {
             top: 15%;
-            left: -60px;
+            left: -70px;
             animation-delay: 0s;
             animation-duration: 12s;
         }
 
         .bonk-gif:nth-child(2) {
             top: 45%;
-            left: -60px;
+            left: -70px;
             animation-delay: 4s;
             animation-duration: 10s;
         }
 
         .bonk-gif:nth-child(3) {
             top: 75%;
-            left: -60px;
+            left: -70px;
             animation-delay: 8s;
             animation-duration: 14s;
         }
 
         .bonk-gif:nth-child(4) {
             top: 25%;
-            right: -60px;
+            right: -70px;
             animation-delay: 2s;
             animation-duration: 11s;
             animation-direction: reverse;
@@ -262,17 +322,10 @@
 
         .bonk-gif:nth-child(5) {
             top: 65%;
-            right: -60px;
+            right: -70px;
             animation-delay: 6s;
             animation-duration: 9s;
             animation-direction: reverse;
-        }
-
-        .bonk-gif:nth-child(6) {
-            top: 35%;
-            left: -60px;
-            animation-delay: 10s;
-            animation-duration: 13s;
         }
 
         @keyframes fly {
@@ -282,47 +335,100 @@
             }
             10% {
                 opacity: 1;
-                transform: translateX(100px) translateY(-20px) rotate(36deg) scale(1);
+                transform: translateX(120px) translateY(-30px) rotate(45deg) scale(1);
             }
             50% {
-                transform: translateX(calc(50vw)) translateY(-40px) rotate(180deg) scale(1.1);
+                transform: translateX(calc(50vw)) translateY(-60px) rotate(180deg) scale(1.2);
             }
             90% {
                 opacity: 1;
-                transform: translateX(calc(100vw - 100px)) translateY(-20px) rotate(324deg) scale(1);
+                transform: translateX(calc(100vw - 120px)) translateY(-30px) rotate(315deg) scale(1);
             }
             100% { 
-                transform: translateX(calc(100vw + 60px)) translateY(0) rotate(360deg) scale(0.8);
+                transform: translateX(calc(100vw + 70px)) translateY(0) rotate(360deg) scale(0.8);
                 opacity: 0;
             }
         }
 
         .floating-element {
             position: absolute;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
+            animation: float 8s ease-in-out infinite;
+            filter: blur(1px);
+        }
+
+        .floating-element:nth-child(6) {
+            width: 120px;
+            height: 120px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
         }
 
         .floating-element:nth-child(7) {
             width: 80px;
             height: 80px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
+            top: 60%;
+            right: 10%;
+            animation-delay: 3s;
         }
 
         .floating-element:nth-child(8) {
-            width: 60px;
-            height: 60px;
-            top: 60%;
-            right: 15%;
-            animation-delay: 2s;
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 25%;
+            animation-delay: 6s;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+            50% { transform: translateY(-40px) rotate(180deg); }
+        }
+
+        .stats-banner {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.3rem;
+                margin-bottom: 50px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .navigation-links {
+                gap: 15px;
+            }
+            
+            .nav-link {
+                padding: 12px 24px;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -333,46 +439,50 @@
         <div class="bonk-gif">💎</div>
         <div class="bonk-gif">🌙</div>
         <div class="bonk-gif">⚡</div>
-        <div class="bonk-gif">🔥</div>
+        <div class="floating-element"></div>
         <div class="floating-element"></div>
         <div class="floating-element"></div>
     </div>
 
     <header class="header">
         <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
-    <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
-    BONKTAH
-</a>
+            <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
+            BONKTAH
+        </a>
     </header>
 
     <main class="main-content">
         <h1 class="hero-title">Bonktah Hub</h1>
+        <p class="hero-subtitle">Where AI meets meme culture in perfect harmony</p>
 
         <div class="options-grid">
             <a href="framework.html" class="option-item">
-                <div class="option-icon">🎯</div>
+                <div class="option-icon">🔧</div>
                 <div class="option-title">Framework</div>
-                <div class="option-description">Build with modern development frameworks</div>
+                <div class="option-description">Technical documentation for building with Bonktah's ElizaOS-powered architecture</div>
             </a>
 
             <a href="bonktah-conscience.html" class="option-item">
                 <div class="option-icon">🧠</div>
                 <div class="option-title">Conscience</div>
-                <div class="option-description">Look inside Bonktah's brain and previous internal chats</div>
+                <div class="option-description">Explore Bonktah's memories and top-rated conversations from the community</div>
             </a>
 
             <a href="bonktah-integration.html" class="option-item">
-                <div class="option-icon">👤</div>
-                <div class="option-title">Bonktah</div>
-                <div class="option-description">Personal AI assistant integration</div>
+                <div class="option-icon">🤖</div>
+                <div class="option-title">Integration</div>
+                <div class="option-description">API documentation and tools to integrate Bonktah into your applications</div>
             </a>
         </div>
 
         <nav class="navigation-links">
-            <a href="#" class="nav-link">Twitter</a>
-            <a href="#" class="nav-link">Github</a>
+            <a href="https://twitter.com/bonktah" class="nav-link">Twitter</a>
+            <a href="https://github.com/bonktah" class="nav-link">Github</a>
         </nav>
 
+        <div class="stats-banner">
+            Built on ElizaOS • Powered by Community
+        </div>
     </main>
 </body>
 </html>
