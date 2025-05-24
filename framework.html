@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bonktah Framework - Technical Documentation</title>
-    <link rel="icon" type="" href="bonk.jpg">
+    <link rel="icon" type="image/jpeg" href="bonk.jpg">
     <style>
         * {
             margin: 0;
@@ -12,14 +12,43 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            --code-bg: rgba(0, 0, 0, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent-yellow: #ffd700;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            background: var(--primary-gradient);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             color: white;
             overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .header {
@@ -28,29 +57,40 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            z-index: 10;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 20px;
+            gap: 12px;
+            font-size: 22px;
             font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateX(-5px);
         }
 
         .logo-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 10px 24px;
             border-radius: 25px;
             color: white;
             text-decoration: none;
@@ -59,12 +99,13 @@
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .main-content {
@@ -75,81 +116,199 @@
             max-width: 1200px;
             width: 100%;
             margin: 0 auto;
+            position: relative;
+        }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            left: 20px;
+            top: 120px;
+            width: 250px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            z-index: 50;
+        }
+
+        .toc h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--accent-yellow);
+        }
+
+        .toc-item {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .toc-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .toc-item.active {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--accent-yellow);
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        @media (max-width: 1200px) {
+            .toc {
+                display: none;
+            }
         }
 
         .framework-header {
             text-align: center;
-            margin-bottom: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
+            margin-bottom: 60px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .framework-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
         }
 
         .framework-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
         }
 
         .framework-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.9;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
         }
 
         .tech-stack {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
         }
 
         .tech-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 20px;
+            border-radius: 24px;
             font-size: 0.9rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--accent-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-yellow), transparent);
+            opacity: 0.8;
         }
 
         .section-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-title .icon {
+            font-size: 1.5em;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         .section-content {
             font-size: 1.1rem;
             line-height: 1.8;
-            opacity: 0.95;
+            color: var(--text-secondary);
+        }
+
+        .section-content p {
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background: rgba(255, 215, 0, 0.15);
+            padding: 3px 8px;
+            border-radius: 6px;
+            color: var(--accent-yellow);
+            font-weight: 600;
         }
 
         .code-block {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
+            background: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0;
+            margin: 25px 0;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-size: 0.9rem;
-            overflow-x: auto;
+            overflow: hidden;
             position: relative;
         }
 
@@ -157,82 +316,166 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .code-lang {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 8px;
-            border-radius: 5px;
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--accent-yellow);
+            padding: 4px 12px;
+            border-radius: 6px;
             font-size: 0.8rem;
+            font-weight: 600;
         }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            margin: 0;
+            color: #f8f8f2;
+        }
+
+        code {
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #66d9ef; }
+        .string { color: #a6e22e; }
+        .comment { color: #75715e; }
+        .function { color: #fd971f; }
 
         .architecture-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            margin: 25px 0;
+            margin: 30px 0;
         }
 
         .arch-component {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arch-component::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 215, 0, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .arch-component:hover::before {
+            opacity: 1;
+        }
+
+        .arch-component:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
 
         .component-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #ffd700;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--accent-yellow);
         }
 
         .component-desc {
             font-size: 0.95rem;
-            opacity: 0.9;
+            color: var(--text-secondary);
             line-height: 1.6;
         }
 
+        ul {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        li strong {
+            color: var(--text-primary);
+        }
+
         .floating-elements {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 1;
+            z-index: 0;
         }
 
         .floating-element {
             position: absolute;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
+            animation: float 12s ease-in-out infinite;
+            filter: blur(2px);
         }
 
         .floating-element:nth-child(1) {
-            width: 60px;
-            height: 60px;
+            width: 150px;
+            height: 150px;
             top: 10%;
             left: 5%;
             animation-delay: 0s;
         }
 
         .floating-element:nth-child(2) {
-            width: 40px;
-            height: 40px;
+            width: 100px;
+            height: 100px;
             top: 70%;
             right: 10%;
-            animation-delay: 3s;
+            animation-delay: 4s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 30%;
+            right: 15%;
+            animation-delay: 8s;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
+            50% { transform: translateY(-50px) rotate(180deg); }
         }
 
         @media (max-width: 768px) {
@@ -241,7 +484,7 @@
             }
             
             .framework-header {
-                padding: 25px;
+                padding: 30px 20px;
             }
             
             .framework-title {
@@ -249,7 +492,11 @@
             }
             
             .section {
-                padding: 20px;
+                padding: 25px 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
             }
             
             .code-block {
@@ -257,21 +504,45 @@
             }
         }
 
-        .highlight {
+        /* Interactive Code Examples */
+        .interactive-demo {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .demo-btn {
             background: rgba(255, 215, 0, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #ffd700;
+            border: 1px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
 
-        ul {
-            margin: 15px 0;
-            padding-left: 25px;
+        .demo-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
         }
 
-        li {
-            margin-bottom: 8px;
-            line-height: 1.6;
+        .demo-output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            min-height: 60px;
+            color: #a6e22e;
         }
     </style>
 </head>
@@ -279,13 +550,24 @@
     <div class="floating-elements">
         <div class="floating-element"></div>
         <div class="floating-element"></div>
+        <div class="floating-element"></div>
     </div>
+
+    <nav class="toc">
+        <h3>Table of Contents</h3>
+        <a href="#architecture" class="toc-item">Architecture Overview</a>
+        <a href="#eliza-integration" class="toc-item">ElizaOS Integration</a>
+        <a href="#plugins" class="toc-item">Custom Plugins</a>
+        <a href="#frontend" class="toc-item">Frontend Architecture</a>
+        <a href="#deployment" class="toc-item">Deployment & Scaling</a>
+        <a href="#extending" class="toc-item">Extending Bonktah</a>
+    </nav>
 
     <header class="header">
         <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
-    <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
-    BONKTAH
-</a>
+            <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
+            BONKTAH
+        </a>
         <a href="index.html" class="back-btn">← Back to Hub</a>
     </header>
 
@@ -303,8 +585,8 @@
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🏗️ Architecture Overview</h2>
+        <div class="section" id="architecture">
+            <h2 class="section-title"><span class="icon">🏗️</span> Architecture Overview</h2>
             <div class="section-content">
                 <p>Bonktah is built as a <span class="highlight">modular addon system</span> that extends the capabilities of existing AI frameworks rather than reinventing the wheel. The core architecture leverages proven open-source foundations while adding specialized functionality for meme-focused AI interactions.</p>
                 
@@ -329,46 +611,46 @@
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🤖 ElizaOS Integration</h2>
+        <div class="section" id="eliza-integration">
+            <h2 class="section-title"><span class="icon">🤖</span> ElizaOS Integration</h2>
             <div class="section-content">
                 <p>Bonktah extends the <span class="highlight">ElizaOS framework</span> - an open-source AI agent framework designed for building autonomous AI characters. Rather than building from scratch, we leverage ElizaOS's robust foundations:</p>
                 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-lang">TypeScript</span>
-                        <span>bonktah-character.ts</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>import { Character, ModelProvider, defaultCharacter } from "@ai16z/eliza";
+                    <pre><code><span class="keyword">import</span> { Character, ModelProvider, defaultCharacter } <span class="keyword">from</span> <span class="string">"@ai16z/eliza"</span>;
 
-export const bonktahCharacter: Character = {
+<span class="keyword">export const</span> bonktahCharacter: Character = {
   ...defaultCharacter,
-  name: "Bonktah",
-  username: "bonktah",
+  name: <span class="string">"Bonktah"</span>,
+  username: <span class="string">"bonktah"</span>,
   
-  // Custom personality traits
+  <span class="comment">// Custom personality traits</span>
   bio: [
-    "A meme-savvy AI with deep knowledge of crypto culture",
-    "Balances serious AI capabilities with humor and relatability",
-    "Built on ElizaOS framework with custom personality extensions"
+    <span class="string">"A meme-savvy AI with deep knowledge of crypto culture"</span>,
+    <span class="string">"Balances serious AI capabilities with humor and relatability"</span>,
+    <span class="string">"Built on ElizaOS framework with custom personality extensions"</span>
   ],
   
-  // Specialized knowledge domains
+  <span class="comment">// Specialized knowledge domains</span>
   topics: [
-    "cryptocurrency", "meme culture", "defi", "creative writing",
-    "life advice", "pop culture", "technology trends"
+    <span class="string">"cryptocurrency"</span>, <span class="string">"meme culture"</span>, <span class="string">"defi"</span>, <span class="string">"creative writing"</span>,
+    <span class="string">"life advice"</span>, <span class="string">"pop culture"</span>, <span class="string">"technology trends"</span>
   ],
   
-  // Custom response style
+  <span class="comment">// Custom response style</span>
   style: {
     all: [
-      "Uses crypto/meme references naturally in conversation",
-      "Balances technical knowledge with approachable explanations",
-      "Occasionally uses emojis and internet slang appropriately"
+      <span class="string">"Uses crypto/meme references naturally in conversation"</span>,
+      <span class="string">"Balances technical knowledge with approachable explanations"</span>,
+      <span class="string">"Occasionally uses emojis and internet slang appropriately"</span>
     ]
   },
   
-  // Plugin configuration
+  <span class="comment">// Plugin configuration</span>
   plugins: [
     consciencePlugin,
     memeCulturePlugin,
@@ -387,138 +669,146 @@ export const bonktahCharacter: Character = {
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🧠 Custom Plugin Development</h2>
+        <div class="section" id="plugins">
+            <h2 class="section-title"><span class="icon">🧠</span> Custom Plugin Development</h2>
             <div class="section-content">
                 <p>Bonktah's unique capabilities come from custom plugins built on top of ElizaOS's plugin architecture:</p>
                 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-lang">TypeScript</span>
-                        <span>conscience-plugin.ts</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>import { Plugin, IAgentRuntime, Memory, State } from "@ai16z/eliza";
+                    <pre><code><span class="keyword">import</span> { Plugin, IAgentRuntime, Memory, State } <span class="keyword">from</span> <span class="string">"@ai16z/eliza"</span>;
 
-export const consciencePlugin: Plugin = {
-  name: "conscience",
-  description: "Stores and retrieves conversation history with voting",
+<span class="keyword">export const</span> consciencePlugin: Plugin = {
+  name: <span class="string">"conscience"</span>,
+  description: <span class="string">"Stores and retrieves conversation history with voting"</span>,
   
   actions: [
     {
-      name: "STORE_CONVERSATION",
-      similes: ["save chat", "remember conversation"],
+      name: <span class="string">"STORE_CONVERSATION"</span>,
+      similes: [<span class="string">"save chat"</span>, <span class="string">"remember conversation"</span>],
       examples: [
         [
           {
-            user: "User",
-            content: { text: "That was a great conversation!" }
+            user: <span class="string">"User"</span>,
+            content: { text: <span class="string">"That was a great conversation!"</span> }
           },
           {
-            user: "Bonktah", 
+            user: <span class="string">"Bonktah"</span>, 
             content: { 
-              text: "I'll save this to my conscience for others to see",
-              action: "STORE_CONVERSATION"
+              text: <span class="string">"I'll save this to my conscience for others to see"</span>,
+              action: <span class="string">"STORE_CONVERSATION"</span>
             }
           }
         ]
       ],
       
-      handler: async (runtime: IAgentRuntime, memory: Memory) => {
-        const conversation = await formatConversation(memory);
-        await database.conversations.create({
-          id: generateId(),
-          timestamp: new Date(),
+      handler: <span class="keyword">async</span> (runtime: IAgentRuntime, memory: Memory) => {
+        <span class="keyword">const</span> conversation = <span class="keyword">await</span> <span class="function">formatConversation</span>(memory);
+        <span class="keyword">await</span> database.conversations.<span class="function">create</span>({
+          id: <span class="function">generateId</span>(),
+          timestamp: <span class="keyword">new</span> Date(),
           messages: conversation.messages,
-          upvotes: 0,
-          category: await categorizeConversation(conversation)
+          upvotes: <span class="number">0</span>,
+          category: <span class="keyword">await</span> <span class="function">categorizeConversation</span>(conversation)
         });
         
-        return true;
+        <span class="keyword">return</span> <span class="boolean">true</span>;
       }
     }
   ],
   
   evaluators: [
     {
-      name: "CONVERSATION_QUALITY",
-      description: "Evaluates if conversation should be saved to conscience",
-      handler: async (runtime: IAgentRuntime, memory: Memory) => {
-        const quality = await analyzeConversationQuality(memory);
-        return quality > 0.7; // Save high-quality conversations
+      name: <span class="string">"CONVERSATION_QUALITY"</span>,
+      description: <span class="string">"Evaluates if conversation should be saved to conscience"</span>,
+      handler: <span class="keyword">async</span> (runtime: IAgentRuntime, memory: Memory) => {
+        <span class="keyword">const</span> quality = <span class="keyword">await</span> <span class="function">analyzeConversationQuality</span>(memory);
+        <span class="keyword">return</span> quality > <span class="number">0.7</span>; <span class="comment">// Save high-quality conversations</span>
       }
     }
   ]
 };</code></pre>
                 </div>
+
+                <div class="interactive-demo">
+                    <div class="demo-controls">
+                        <button class="demo-btn" onclick="runPluginDemo()">Run Plugin Demo</button>
+                        <button class="demo-btn" onclick="clearDemo()">Clear</button>
+                    </div>
+                    <div class="demo-output" id="demo-output">Click "Run Plugin Demo" to see the plugin in action...</div>
+                </div>
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">⚛️ Frontend Architecture</h2>
+        <div class="section" id="frontend">
+            <h2 class="section-title"><span class="icon">⚛️</span> Frontend Architecture</h2>
             <div class="section-content">
                 <p>The Bonktah interface is built using modern web technologies with a focus on <span class="highlight">glassmorphism design</span> and smooth user experience:</p>
                 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-lang">React + TypeScript</span>
-                        <span>ChatInterface.tsx</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>import React, { useState, useEffect } from 'react';
-import { WebSocket } from 'ws';
+                    <pre><code><span class="keyword">import</span> React, { useState, useEffect } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> { WebSocket } <span class="keyword">from</span> <span class="string">'ws'</span>;
 
-interface Message {
-  id: string;
-  author: 'user' | 'bonktah';
-  content: string;
+<span class="keyword">interface</span> Message {
+  id: <span class="keyword">string</span>;
+  author: <span class="string">'user'</span> | <span class="string">'bonktah'</span>;
+  content: <span class="keyword">string</span>;
   timestamp: Date;
 }
 
-export const ChatInterface: React.FC = () => {
-  const [messages, setMessages] = useState&lt;Message[]&gt;([]);
-  const [socket, setSocket] = useState&lt;WebSocket | null&gt;(null);
+<span class="keyword">export const</span> ChatInterface: React.FC = () => {
+  <span class="keyword">const</span> [messages, setMessages] = useState&lt;Message[]&gt;([]);
+  <span class="keyword">const</span> [socket, setSocket] = useState&lt;WebSocket | <span class="keyword">null</span>&gt;(<span class="keyword">null</span>);
   
   useEffect(() => {
-    // Connect to ElizaOS backend via WebSocket
-    const ws = new WebSocket('ws://localhost:3000/chat');
+    <span class="comment">// Connect to ElizaOS backend via WebSocket</span>
+    <span class="keyword">const</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">'ws://localhost:3000/chat'</span>);
     
     ws.onmessage = (event) => {
-      const response = JSON.parse(event.data);
+      <span class="keyword">const</span> response = JSON.parse(event.data);
       setMessages(prev => [...prev, {
         id: response.id,
-        author: 'bonktah',
+        author: <span class="string">'bonktah'</span>,
         content: response.text,
-        timestamp: new Date(response.timestamp)
+        timestamp: <span class="keyword">new</span> Date(response.timestamp)
       }]);
     };
     
     setSocket(ws);
-    return () => ws.close();
+    <span class="keyword">return</span> () => ws.close();
   }, []);
   
-  const sendMessage = (content: string) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      const message = {
+  <span class="keyword">const</span> sendMessage = (content: <span class="keyword">string</span>) => {
+    <span class="keyword">if</span> (socket && socket.readyState === WebSocket.OPEN) {
+      <span class="keyword">const</span> message = {
         text: content,
         userId: generateUserId(),
-        timestamp: new Date().toISOString()
+        timestamp: <span class="keyword">new</span> Date().toISOString()
       };
       
       socket.send(JSON.stringify(message));
       
-      // Add user message to UI immediately
+      <span class="comment">// Add user message to UI immediately</span>
       setMessages(prev => [...prev, {
         id: generateId(),
-        author: 'user', 
+        author: <span class="string">'user'</span>, 
         content,
-        timestamp: new Date()
+        timestamp: <span class="keyword">new</span> Date()
       }]);
     }
   };
   
-  return (
-    &lt;div className="chat-interface"&gt;
-      {/* Glassmorphism chat container */}
-      &lt;div className="chat-container"&gt;
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"chat-interface"</span>&gt;
+      <span class="comment">{/* Glassmorphism chat container */}</span>
+      &lt;div className=<span class="string">"chat-container"</span>&gt;
         {messages.map(message => (
           &lt;MessageBubble key={message.id} message={message} /&gt;
         ))}
@@ -531,15 +821,15 @@ export const ChatInterface: React.FC = () => {
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🚀 Deployment & Scaling</h2>
+        <div class="section" id="deployment">
+            <h2 class="section-title"><span class="icon">🚀</span> Deployment & Scaling</h2>
             <div class="section-content">
                 <p>Bonktah leverages ElizaOS's built-in deployment capabilities while adding custom infrastructure for the conscience system:</p>
                 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-lang">Docker</span>
-                        <span>docker-compose.yml</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                     <pre><code>version: '3.8'
 services:
@@ -589,55 +879,55 @@ volumes:
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🔌 Extending Bonktah</h2>
+        <div class="section" id="extending">
+            <h2 class="section-title"><span class="icon">🔌</span> Extending Bonktah</h2>
             <div class="section-content">
                 <p>Bonktah is designed to be extensible. Developers can add new plugins, personality traits, or integrations:</p>
                 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-lang">TypeScript</span>
-                        <span>custom-plugin-example.ts</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>// Example: Adding a crypto price plugin
-export const cryptoPricePlugin: Plugin = {
-  name: "crypto-prices",
-  description: "Fetches real-time cryptocurrency prices",
+                    <pre><code><span class="comment">// Example: Adding a crypto price plugin</span>
+<span class="keyword">export const</span> cryptoPricePlugin: Plugin = {
+  name: <span class="string">"crypto-prices"</span>,
+  description: <span class="string">"Fetches real-time cryptocurrency prices"</span>,
   
   actions: [
     {
-      name: "GET_CRYPTO_PRICE", 
-      similes: ["price check", "how much is", "what's the price"],
+      name: <span class="string">"GET_CRYPTO_PRICE"</span>, 
+      similes: [<span class="string">"price check"</span>, <span class="string">"how much is"</span>, <span class="string">"what's the price"</span>],
       examples: [
         [
           {
-            user: "User",
-            content: { text: "What's the price of Bitcoin?" }
+            user: <span class="string">"User"</span>,
+            content: { text: <span class="string">"What's the price of Bitcoin?"</span> }
           },
           {
-            user: "Bonktah",
+            user: <span class="string">"Bonktah"</span>,
             content: { 
-              text: "Bitcoin is currently $43,250 📈",
-              action: "GET_CRYPTO_PRICE"
+              text: <span class="string">"Bitcoin is currently $43,250 📈"</span>,
+              action: <span class="string">"GET_CRYPTO_PRICE"</span>
             }
           }
         ]
       ],
       
-      handler: async (runtime, memory, state, message) => {
-        const symbol = extractCryptoSymbol(message.content.text);
-        const price = await fetchCryptoPrice(symbol);
+      handler: <span class="keyword">async</span> (runtime, memory, state, message) => {
+        <span class="keyword">const</span> symbol = extractCryptoSymbol(message.content.text);
+        <span class="keyword">const</span> price = <span class="keyword">await</span> fetchCryptoPrice(symbol);
         
-        return {
-          text: `${symbol.toUpperCase()} is currently $${price.toLocaleString()} ${price.change > 0 ? '📈' : '📉'}`,
-          action: "GET_CRYPTO_PRICE"
+        <span class="keyword">return</span> {
+          text: <span class="string">`${symbol.toUpperCase()} is currently $${price.toLocaleString()} ${price.change > 0 ? '📈' : '📉'}`</span>,
+          action: <span class="string">"GET_CRYPTO_PRICE"</span>
         };
       }
     }
   ]
 };
 
-// Register the plugin
+<span class="comment">// Register the plugin</span>
 runtime.registerPlugin(cryptoPricePlugin);</code></pre>
                 </div>
                 
@@ -645,5 +935,70 @@ runtime.registerPlugin(cryptoPricePlugin);</code></pre>
             </div>
         </div>
     </main>
+
+    <script>
+        // Smooth scroll for TOC
+        document.querySelectorAll('.toc-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(item.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Update active state
+                    document.querySelectorAll('.toc-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Update TOC active state on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const tocItems = document.querySelectorAll('.toc-item');
+            
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    tocItems.forEach(item => item.classList.remove('active'));
+                    if (tocItems[index]) {
+                        tocItems[index].classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'rgba(76, 175, 80, 0.3)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Interactive demo
+        function runPluginDemo() {
+            const output = document.getElementById('demo-output');
+            output.innerHTML = `<span style="color: #66d9ef;">Plugin initialized...</span><br>
+<span style="color: #a6e22e;">✓ Conscience plugin loaded</span><br>
+<span style="color: #a6e22e;">✓ Connected to database</span><br>
+<span style="color: #fd971f;">→ Analyzing conversation quality: 0.85</span><br>
+<span style="color: #a6e22e;">✓ Conversation saved to conscience!</span>`;
+        }
+
+        function clearDemo() {
+            const output = document.getElementById('demo-output');
+            output.textContent = 'Click "Run Plugin Demo" to see the plugin in action...';
+        }
+    </script>
 </body>
 </html>
