@@ -892,7 +892,7 @@ Content-Type: application/json</code></pre>
                     <li class="step-item">
                         <div class="step-title">Create a Bonktah Account</div>
                         <div class="step-content">
-                            Sign up at <a href="https://bonktah.ai/signup" style="color: var(--accent-blue);">bonktah.ai/signup</a> using your email or social login
+                            Sign up at <a href="https://bonktah.xyz/signup" style="color: var(--accent-blue);">bonktah.xyz/signup</a> using your email or social login
                         </div>
                     </li>
                     <li class="step-item">
@@ -1024,7 +1024,7 @@ Content-Type: application/json</code></pre>
                             <span class="code-lang">cURL</span>
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
-                        <pre><code>curl -X POST https://api.bonktah.ai/v1/chat \
+                        <pre><code>curl -X POST https://api.bonktah.xyz/v1/chat \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -1043,7 +1043,7 @@ Content-Type: application/json</code></pre>
                         </div>
                         <pre><code>const axios = require('axios');
 
-const response = await axios.post('https://api.bonktah.ai/v1/chat', {
+const response = await axios.post('https://api.bonktah.xyz/v1/chat', {
   message: "Hey Bonktah, what's your take on meme coins?",
   userId: 'user_12345',
   sessionId: 'session_abc123',
@@ -1071,7 +1071,7 @@ console.log(response.data.response);</code></pre>
                         <pre><code>import requests
 
 response = requests.post(
-    'https://api.bonktah.ai/v1/chat',
+    'https://api.bonktah.xyz/v1/chat',
     json={
         'message': "Hey Bonktah, what's your take on meme coins?",
         'userId': 'user_12345',
@@ -1537,7 +1537,7 @@ export const BonktahChat: React.FC = () => {
                     <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);">
                         <h3 style="color: var(--accent-blue); margin-bottom: 15px;">📚 Documentation</h3>
                         <p>Comprehensive guides and API reference</p>
-                        <a href="https://docs.bonktah.ai" style="color: var(--accent-blue); text-decoration: none; display: inline-block; margin-top: 10px;">View Docs →</a>
+                        <a href="https://docs.bonktah.xyz" style="color: var(--accent-blue); text-decoration: none; display: inline-block; margin-top: 10px;">View Docs →</a>
                     </div>
                     
                     <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);">
@@ -1556,7 +1556,7 @@ export const BonktahChat: React.FC = () => {
                 <div style="margin-top: 40px; text-align: center; padding: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 16px;">
                     <h3 style="color: var(--accent-orange); margin-bottom: 15px;">🚀 Ready to start building?</h3>
                     <p style="font-size: 1.1rem; opacity: 0.9;">Get your API key and join thousands of developers creating with Bonktah!</p>
-                    <a href="https://bonktah.ai/signup" style="display: inline-block; margin-top: 20px; padding: 15px 30px; background: linear-gradient(135deg, var(--accent-orange), var(--accent-red)); color: white; text-decoration: none; border-radius: 30px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(255, 152, 0, 0.4)';" onmouseout="this.style.transform=''; this.style.boxShadow='0 10px 25px rgba(255, 152, 0, 0.3)';">
+                    <a href="https://bonktah.xyz/signup" style="display: inline-block; margin-top: 20px; padding: 15px 30px; background: linear-gradient(135deg, var(--accent-orange), var(--accent-red)); color: white; text-decoration: none; border-radius: 30px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(255, 152, 0, 0.4)';" onmouseout="this.style.transform=''; this.style.boxShadow='0 10px 25px rgba(255, 152, 0, 0.3)';">
                         Get Started Free
                     </a>
                 </div>
