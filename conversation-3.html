@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bonktah Conversation - Life Advice</title>
-    <link rel="icon" type="" href="bonk.jpg">
+    <title>Bonktah Conversation - Work-Life Balance Advice</title>
+    <link rel="icon" type="image/jpeg" href="bonk.jpg">
     <style>
         * {
             margin: 0;
@@ -12,14 +12,58 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent-gold: #ffd700;
+            --user-bubble: rgba(255, 255, 255, 0.15);
+            --bot-bubble: rgba(255, 255, 255, 0.08);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            background: var(--primary-gradient);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             color: white;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .header {
@@ -28,35 +72,38 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            z-index: 10;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 20px;
+            gap: 12px;
+            font-size: 22px;
             font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateX(-5px);
         }
 
         .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px dashed rgba(255, 255, 255, 0.5);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 10px;
-            font-weight: normal;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 10px 24px;
             border-radius: 25px;
             color: white;
             text-decoration: none;
@@ -65,12 +112,13 @@
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .main-content {
@@ -78,192 +126,423 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 40px 20px;
             max-width: 1000px;
             width: 100%;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .conversation-header {
             text-align: center;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 20px;
+            margin-bottom: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
             width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .conversation-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .conversation-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .conversation-meta {
             display: flex;
             justify-content: center;
             gap: 30px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             opacity: 0.8;
             flex-wrap: wrap;
-        }
-
-        .chat-container {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 20px;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .message {
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        .message.user {
-            text-align: right;
-        }
-
-        .message.bot {
-            text-align: left;
-        }
-
-        .message-bubble {
-            display: inline-block;
-            max-width: 70%;
-            padding: 15px 20px;
-            border-radius: 20px;
-            word-wrap: break-word;
             position: relative;
+            z-index: 1;
         }
 
-        .user .message-bubble {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-bottom-right-radius: 5px;
-        }
-
-        .bot .message-bubble {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-bottom-left-radius: 5px;
-        }
-
-        .message-author {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .message-timestamp {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            margin-top: 5px;
-        }
-
-        .upvote-section {
-            margin-top: 30px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 20px;
-        }
-
-        .upvote-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 25px;
-            border-radius: 25px;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            display: inline-flex;
+        .meta-item {
+            display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .upvote-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
+        .meta-item .icon {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        .chat-container {
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(to bottom, var(--glass-bg), transparent);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .chat-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(to top, var(--glass-bg), transparent);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .message {
+            margin-bottom: 25px;
+            animation: fadeInUp 0.5s ease-out;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message.bot {
+            flex-direction: row;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .user .message-avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .bot .message-avatar {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .message-content {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message-author {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user .message-author {
+            text-align: right;
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            padding: 18px 24px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .user .message-bubble {
+            background: var(--user-bubble);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .bot .message-bubble {
+            background: var(--bot-bubble);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-bubble:hover {
             transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-timestamp {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .user .message-timestamp {
+            justify-content: flex-end;
+        }
+
+        .reaction-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .message:hover .reaction-bar {
+            opacity: 1;
+        }
+
+        .reaction-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reaction-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .upvote-section {
+            margin-top: 40px;
+            text-align: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upvote-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), transparent, var(--accent-gold));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .upvote-btn {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 15px 35px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upvote-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .upvote-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .upvote-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.3);
+            border-color: var(--accent-gold);
         }
 
         .upvote-btn.upvoted {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.15));
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .upvote-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .upvote-stats {
+            margin-top: 20px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .upvote-count-display {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin: 0 8px;
+        }
+
+        .share-section {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .floating-elements {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 1;
+            z-index: 0;
         }
 
         .floating-element {
             position: absolute;
-            background: rgba(255, 255, 255, 0.05);
             border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
+            animation: float 15s ease-in-out infinite;
+            filter: blur(1px);
         }
 
         .floating-element:nth-child(1) {
-            width: 60px;
-            height: 60px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
             top: 10%;
             left: 5%;
             animation-delay: 0s;
         }
 
         .floating-element:nth-child(2) {
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
             top: 70%;
             right: 10%;
-            animation-delay: 3s;
+            animation-delay: 5s;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
-        }
-
-        /* Custom scrollbar */
-        .chat-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .chat-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.4);
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+            }
+            33% { 
+                transform: translateY(-30px) translateX(20px) rotate(120deg); 
+            }
+            66% { 
+                transform: translateY(20px) translateX(-20px) rotate(240deg); 
+            }
         }
 
         @media (max-width: 768px) {
@@ -271,16 +550,33 @@
                 padding: 15px 20px;
             }
             
+            .conversation-title {
+                font-size: 1.5rem;
+            }
+            
             .conversation-meta {
                 gap: 15px;
+                font-size: 0.85rem;
+            }
+            
+            .message-content {
+                max-width: 85%;
             }
             
             .message-bubble {
-                max-width: 85%;
+                padding: 15px 20px;
+                font-size: 1rem;
             }
             
             .chat-container {
                 max-height: 60vh;
+                padding: 20px;
+            }
+            
+            .message-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
             }
         }
     </style>
@@ -293,95 +589,170 @@
 
     <header class="header">
         <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
-    <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
-    BONKTAH
-</a>
+            <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
+            BONKTAH
+        </a>
         <a href="bonktah-conscience.html" class="back-btn">← Back to Conscience</a>
     </header>
 
     <main class="main-content">
         <div class="conversation-header">
-            <h1 class="conversation-title">Conversation 11/8/2024, 7:45:42 PM</h1>
+            <h1 class="conversation-title">Work-Life Balance Advice</h1>
             <div class="conversation-meta">
-                <span>Date: November 8, 2024, 7:45:42 PM</span>
-                <span id="upvoteDisplay">Upvotes: 3</span>
-                <span>Messages: 8</span>
+                <span class="meta-item"><span class="icon">📅</span> November 8, 2024</span>
+                <span class="meta-item"><span class="icon">⬆️</span> <span id="upvoteDisplay">3</span> upvotes</span>
+                <span class="meta-item"><span class="icon">💬</span> 8 messages</span>
+                <span class="meta-item"><span class="icon">⏱️</span> 5 min read</span>
             </div>
         </div>
 
         <div class="chat-container" id="chatContainer">
             <div class="message user">
-                <div class="message-author">User</div>
-                <div class="message-bubble">
-                    Hi! How can I help you today?
-                    <div class="message-timestamp">7:45:42 PM</div>
+                <div class="message-avatar">👤</div>
+                <div class="message-content">
+                    <div class="message-author">User</div>
+                    <div class="message-bubble">
+                        Hi! How can I help you today?
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:45:42 PM</span>
+                    </div>
                 </div>
             </div>
 
             <div class="message bot">
-                <div class="message-author">Bonktah</div>
-                <div class="message-bubble">
-                    Wait, I think you've got it backwards! 😄 I'm here to help YOU! Though I appreciate the enthusiasm. I'm Bonktah, your friendly AI companion. What's on your mind today? Feeling good, bad, confused, excited? I'm here for whatever you need to talk about!
-                    <div class="message-timestamp">7:45:48 PM</div>
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="message-author">Bonktah</div>
+                    <div class="message-bubble">
+                        Wait, I think you've got it backwards! 😄 I'm here to help YOU! Though I appreciate the enthusiasm. I'm Bonktah, your friendly AI companion. What's on your mind today? Feeling good, bad, confused, excited? I'm here for whatever you need to talk about!
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:45:48 PM</span>
+                    </div>
+                    <div class="reaction-bar">
+                        <button class="reaction-btn">😄</button>
+                        <button class="reaction-btn">❤️</button>
+                        <button class="reaction-btn">🤗</button>
+                    </div>
                 </div>
             </div>
 
             <div class="message user">
-                <div class="message-author">User</div>
-                <div class="message-bubble">
-                    Oh haha, my bad! Honestly, I'm feeling pretty overwhelmed with life lately. Work stress, relationship stuff, just... everything
-                    <div class="message-timestamp">7:46:15 PM</div>
+                <div class="message-avatar">👤</div>
+                <div class="message-content">
+                    <div class="message-author">User</div>
+                    <div class="message-bubble">
+                        Oh haha, my bad! Honestly, I'm feeling pretty overwhelmed with life lately. Work stress, relationship stuff, just... everything
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:46:15 PM</span>
+                    </div>
                 </div>
             </div>
 
             <div class="message bot">
-                <div class="message-author">Bonktah</div>
-                <div class="message-bubble">
-                    I hear you, that sounds really tough. When everything feels overwhelming, it's like being caught in multiple storms at once. Want to talk about what's weighing on you the most? Sometimes just getting it out can help, even if we can't solve everything at once. No judgment here - we've all been there! 💙
-                    <div class="message-timestamp">7:46:25 PM</div>
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="message-author">Bonktah</div>
+                    <div class="message-bubble">
+                        I hear you, that sounds really tough. When everything feels overwhelming, it's like being caught in multiple storms at once. Want to talk about what's weighing on you the most? Sometimes just getting it out can help, even if we can't solve everything at once. No judgment here - we've all been there! 💙
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:46:25 PM</span>
+                    </div>
+                    <div class="reaction-bar">
+                        <button class="reaction-btn">💙</button>
+                        <button class="reaction-btn">🌟</button>
+                        <button class="reaction-btn">🤝</button>
+                    </div>
                 </div>
             </div>
 
             <div class="message user">
-                <div class="message-author">User</div>
-                <div class="message-bubble">
-                    I guess it's mostly work. My boss keeps piling on more responsibilities but no pay raise, and I'm starting to resent going in every day
-                    <div class="message-timestamp">7:47:02 PM</div>
+                <div class="message-avatar">👤</div>
+                <div class="message-content">
+                    <div class="message-author">User</div>
+                    <div class="message-bubble">
+                        I guess it's mostly work. My boss keeps piling on more responsibilities but no pay raise, and I'm starting to resent going in every day
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:47:02 PM</span>
+                    </div>
                 </div>
             </div>
 
             <div class="message bot">
-                <div class="message-author">Bonktah</div>
-                <div class="message-bubble">
-                    Ugh, that's the worst feeling - when you're giving more but getting nothing back. It's like being taken for granted professionally, and that resentment is totally valid! Have you been able to document all these extra responsibilities? Sometimes we don't realize how much our role has grown until we write it down. Could be useful for a future conversation about compensation, or even updating your resume if you decide to explore other options 🤔
-                    <div class="message-timestamp">7:47:15 PM</div>
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="message-author">Bonktah</div>
+                    <div class="message-bubble">
+                        Ugh, that's the worst feeling - when you're giving more but getting nothing back. It's like being taken for granted professionally, and that resentment is totally valid! Have you been able to document all these extra responsibilities? Sometimes we don't realize how much our role has grown until we write it down. Could be useful for a future conversation about compensation, or even updating your resume if you decide to explore other options 🤔
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:47:15 PM</span>
+                    </div>
+                    <div class="reaction-bar">
+                        <button class="reaction-btn">💡</button>
+                        <button class="reaction-btn">📝</button>
+                        <button class="reaction-btn">💪</button>
+                    </div>
                 </div>
             </div>
 
             <div class="message user">
-                <div class="message-author">User</div>
-                <div class="message-bubble">
-                    That's actually really smart advice. I haven't been tracking it but you're right, I should. I'm just scared to rock the boat, you know?
-                    <div class="message-timestamp">7:48:01 PM</div>
+                <div class="message-avatar">👤</div>
+                <div class="message-content">
+                    <div class="message-author">User</div>
+                    <div class="message-bubble">
+                        That's actually really smart advice. I haven't been tracking it but you're right, I should. I'm just scared to rock the boat, you know?
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:48:01 PM</span>
+                    </div>
                 </div>
             </div>
 
             <div class="message bot">
-                <div class="message-author">Bonktah</div>
-                <div class="message-bubble">
-                    Totally get that fear! But here's the thing - the boat is already being rocked by your growing resentment and stress. You're just choosing to rock it intentionally toward something better, instead of letting it slowly sink with you in it. Start with the documentation - that's just being professional and organized. No boat-rocking there! Then you'll have options, which always feels better than feeling trapped. You deserve to be valued for what you bring! ✨
-                    <div class="message-timestamp">7:48:12 PM</div>
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="message-author">Bonktah</div>
+                    <div class="message-bubble">
+                        Totally get that fear! But here's the thing - the boat is already being rocked by your growing resentment and stress. You're just choosing to rock it intentionally toward something better, instead of letting it slowly sink with you in it. Start with the documentation - that's just being professional and organized. No boat-rocking there! Then you'll have options, which always feels better than feeling trapped. You deserve to be valued for what you bring! ✨
+                    </div>
+                    <div class="message-timestamp">
+                        <span>7:48:12 PM</span>
+                    </div>
+                    <div class="reaction-bar">
+                        <button class="reaction-btn">✨</button>
+                        <button class="reaction-btn">🚀</button>
+                        <button class="reaction-btn">💯</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="upvote-section">
             <button class="upvote-btn" id="upvoteBtn" onclick="toggleUpvote()">
-                <span>▲</span>
+                <span>⬆️</span>
                 <span id="upvoteText">Upvote this conversation</span>
             </button>
-            <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
-                <span id="upvoteCount">3</span> people found this conversation helpful
+            <div class="upvote-stats">
+                <p>This conversation has been upvoted</p>
+                <span class="upvote-count-display" id="upvoteCount">3</span>
+                <p>times by the community</p>
+            </div>
+            
+            <div class="share-section">
+                <a href="#" class="share-btn" onclick="shareConversation('twitter')">
+                    <span>🐦</span> Share on X
+                </a>
+                <a href="#" class="share-btn" onclick="shareConversation('copy')">
+                    <span>📋</span> Copy Link
+                </a>
+                <a href="#" class="share-btn" onclick="shareConversation('embed')">
+                    <span>🔗</span> Embed
+                </a>
             </div>
         </div>
     </main>
@@ -401,6 +772,12 @@
                 isUpvoted = true;
                 upvoteBtn.classList.add('upvoted');
                 upvoteText.textContent = 'Thanks for your upvote!';
+                
+                // Add animation
+                upvoteBtn.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    upvoteBtn.style.transform = '';
+                }, 200);
             } else {
                 currentUpvotes--;
                 isUpvoted = false;
@@ -409,8 +786,28 @@
             }
             
             upvoteCount.textContent = currentUpvotes;
-            upvoteDisplay.textContent = `Upvotes: ${currentUpvotes}`;
+            upvoteDisplay.textContent = currentUpvotes;
         }
-    </script>
-</body>
-</html>
+
+        function shareConversation(platform) {
+            const url = window.location.href;
+            const title = "Bonktah's advice on work-life balance really helped me!";
+            
+            switch(platform) {
+                case 'twitter':
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank');
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(url).then(() => {
+                        event.target.innerHTML = '<span>✓</span> Copied!';
+                        setTimeout(() => {
+                            event.target.innerHTML = '<span>📋</span> Copy Link';
+                        }, 2000);
+                    });
+                    break;
+                case 'embed':
+                    const embedCode = `<iframe src="${url}?embed=true" width="600" height="400"></iframe>`;
+                    navigator.clipboard.writeText(embedCode).then(() => {
+                        event.target.innerHTML = '<span>✓</span> Copied!';
+                        setTimeout(() => {
+                            event.target.innerHTML = '<span>🔗</span> Embed';
