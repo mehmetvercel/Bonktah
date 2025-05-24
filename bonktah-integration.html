@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bonktah Integration Guide</title>
-    <link rel="icon" type="" href="bonk.jpg">
+    <title>Bonktah Integration - API & Developer Guide</title>
+    <link rel="icon" type="image/jpeg" href="bonk.jpg">
     <style>
         * {
             margin: 0;
@@ -12,14 +12,61 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            --code-bg: rgba(0, 0, 0, 0.5);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent-green: #4CAF50;
+            --accent-blue: #2196F3;
+            --accent-orange: #FF9800;
+            --accent-red: #f44336;
+            --accent-purple: #9c27b0;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            background: var(--primary-gradient);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             color: white;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(33, 150, 243, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(76, 175, 80, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .header {
@@ -28,29 +75,40 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            z-index: 10;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 20px;
+            gap: 12px;
+            font-size: 22px;
             font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateX(-5px);
         }
 
         .logo-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 10px 24px;
             border-radius: 25px;
             color: white;
             text-decoration: none;
@@ -59,45 +117,164 @@
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 120px;
+            width: 260px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            z-index: 50;
+        }
+
+        .sidebar h3 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-blue);
+            transform: translateX(-3px);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover::before,
+        .nav-item.active::before {
+            transform: translateX(0);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding-left: 20px;
+        }
+
+        .nav-item.active {
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                display: none;
+            }
         }
 
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 40px 20px;
-            max-width: 1200px;
+            padding: 40px 20px 40px 320px;
+            max-width: 1400px;
             width: 100%;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                padding: 40px 20px;
+            }
         }
 
         .integration-header {
             text-align: center;
-            margin-bottom: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
+            margin-bottom: 60px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .integration-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(33, 150, 243, 0.1) 0%, transparent 70%);
+            animation: pulse 5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
         }
 
         .integration-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
         }
 
         .integration-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.9;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
         }
 
         .quick-links {
@@ -105,59 +282,69 @@
             gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
         }
 
         .quick-link {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: rgba(33, 150, 243, 0.15);
+            padding: 10px 20px;
+            border-radius: 24px;
             font-size: 0.9rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            border: 1px solid rgba(33, 150, 243, 0.3);
             text-decoration: none;
             color: inherit;
             transition: all 0.3s ease;
         }
 
         .quick-link:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            background: rgba(33, 150, 243, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
         }
 
         .section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
         }
 
         .section-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-title .icon {
+            font-size: 1.5em;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         .section-content {
             font-size: 1.1rem;
             line-height: 1.8;
-            opacity: 0.95;
+            color: var(--text-secondary);
         }
 
         .code-block {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
+            background: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin: 25px 0;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-size: 0.9rem;
-            overflow-x: auto;
+            overflow: hidden;
             position: relative;
         }
 
@@ -165,23 +352,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .code-lang {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 8px;
-            border-radius: 5px;
+            background: rgba(33, 150, 243, 0.2);
+            color: #64b5f6;
+            padding: 4px 12px;
+            border-radius: 6px;
             font-size: 0.8rem;
+            font-weight: 600;
         }
 
         .copy-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 4px 8px;
-            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 6px;
             color: white;
             cursor: pointer;
             font-size: 0.8rem;
@@ -189,137 +378,378 @@
         }
 
         .copy-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn.copied {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: var(--accent-green);
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            margin: 0;
+            color: #f8f8f2;
+        }
+
+        code {
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .endpoint-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .endpoint-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+        }
+
+        .endpoint-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(33, 150, 243, 0.3);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .endpoint-method {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-green);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            min-width: 60px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .endpoint-method.post { 
+            background: var(--accent-blue); 
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+        }
+        .endpoint-method.put { 
+            background: var(--accent-orange); 
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+        }
+        .endpoint-method.delete { 
+            background: var(--accent-red); 
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+        }
+
+        .endpoint-url {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #64b5f6;
+        }
+
+        .endpoint-description {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+
+        .param-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        .param-table th {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent-blue);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .param-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .param-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .param-name {
+            font-family: monospace;
+            color: #ffd54f;
+            font-weight: 600;
+        }
+
+        .param-type {
+            font-family: monospace;
+            color: #81c784;
+            font-size: 0.9rem;
+        }
+
+        .param-required {
+            display: inline-block;
+            background: rgba(244, 67, 54, 0.2);
+            color: #ff8a80;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .param-optional {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.2);
+            color: #81c784;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: rgba(255, 152, 0, 0.1);
+            border: 2px solid rgba(255, 152, 0, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .warning-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 80px;
+            opacity: 0.1;
+        }
+
+        .warning-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffb74d;
+        }
+
+        .success-box {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-box::before {
+            content: '✓';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 80px;
+            opacity: 0.1;
         }
 
         .step-list {
             counter-reset: step-counter;
             list-style: none;
             padding: 0;
+            margin: 20px 0;
         }
 
         .step-item {
             counter-increment: step-counter;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 15px 0;
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 4px solid #ffd700;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
+            padding-left: 70px;
+            transition: all 0.3s ease;
+        }
+
+        .step-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+            border-color: rgba(33, 150, 243, 0.3);
         }
 
         .step-item::before {
             content: counter(step-counter);
             position: absolute;
-            left: -15px;
-            top: 15px;
-            background: #ffd700;
-            color: #000;
-            width: 30px;
-            height: 30px;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.4);
         }
 
         .step-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #ffd700;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
         }
 
         .step-content {
-            margin-left: 20px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            border-radius: 12px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ul {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
             line-height: 1.6;
         }
 
-        .endpoint-card {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 15px 0;
-        }
-
-        .endpoint-method {
-            display: inline-block;
-            background: #4CAF50;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .endpoint-method.post { background: #2196F3; }
-        .endpoint-method.put { background: #FF9800; }
-        .endpoint-method.delete { background: #f44336; }
-
-        .endpoint-url {
-            font-family: monospace;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        .warning-box {
-            background: rgba(255, 193, 7, 0.1);
-            border: 2px solid rgba(255, 193, 7, 0.4);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .warning-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #ffd700;
+        li strong {
+            color: var(--text-primary);
         }
 
         .floating-elements {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 1;
+            z-index: 0;
         }
 
         .floating-element {
             position: absolute;
-            background: rgba(255, 255, 255, 0.05);
             border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
+            animation: float 15s ease-in-out infinite;
+            filter: blur(2px);
         }
 
         .floating-element:nth-child(1) {
-            width: 60px;
-            height: 60px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(33, 150, 243, 0.05) 0%, transparent 70%);
             top: 10%;
             left: 5%;
             animation-delay: 0s;
         }
 
         .floating-element:nth-child(2) {
-            width: 40px;
-            height: 40px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.05) 0%, transparent 70%);
             top: 70%;
             right: 10%;
-            animation-delay: 3s;
+            animation-delay: 5s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(156, 39, 176, 0.03) 0%, transparent 70%);
+            top: 40%;
+            right: 20%;
+            animation-delay: 10s;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-30px) translateX(30px) rotate(90deg); 
+            }
+            50% { 
+                transform: translateY(30px) translateX(-30px) rotate(180deg); 
+            }
+            75% { 
+                transform: translateY(-20px) translateX(-20px) rotate(270deg); 
+            }
         }
 
         @media (max-width: 768px) {
@@ -328,7 +758,7 @@
             }
             
             .integration-header {
-                padding: 25px;
+                padding: 30px 20px;
             }
             
             .integration-title {
@@ -336,26 +766,24 @@
             }
             
             .section {
-                padding: 20px;
+                padding: 25px 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
             }
             
             .code-block {
                 font-size: 0.8rem;
             }
             
-            .step-content {
-                margin-left: 10px;
+            .endpoint-header {
+                flex-wrap: wrap;
             }
-        }
-
-        ul {
-            margin: 15px 0;
-            padding-left: 25px;
-        }
-
-        li {
-            margin-bottom: 8px;
-            line-height: 1.6;
+            
+            .endpoint-url {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -363,53 +791,143 @@
     <div class="floating-elements">
         <div class="floating-element"></div>
         <div class="floating-element"></div>
+        <div class="floating-element"></div>
     </div>
+
+    <nav class="sidebar">
+        <h3>Navigation</h3>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Getting Started</div>
+            <a href="#overview" class="nav-item active">Overview</a>
+            <a href="#authentication" class="nav-item">Authentication</a>
+            <a href="#quickstart" class="nav-item">Quick Start</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">API Reference</div>
+            <a href="#chat-api" class="nav-item">Chat API</a>
+            <a href="#conscience-api" class="nav-item">Conscience API</a>
+            <a href="#webhooks" class="nav-item">Webhooks</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Examples</div>
+            <a href="#discord-bot" class="nav-item">Discord Bot</a>
+            <a href="#react-integration" class="nav-item">React Integration</a>
+            <a href="#python-sdk" class="nav-item">Python SDK</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Resources</div>
+            <a href="#rate-limits" class="nav-item">Rate Limits</a>
+            <a href="#best-practices" class="nav-item">Best Practices</a>
+            <a href="#support" class="nav-item">Support</a>
+        </div>
+    </nav>
 
     <header class="header">
         <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
-    <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
-    BONKTAH
-</a>
+            <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
+            BONKTAH
+        </a>
         <a href="index.html" class="back-btn">← Back to Hub</a>
     </header>
 
     <main class="main-content">
         <div class="integration-header">
             <h1 class="integration-title">🤖 Bonktah Integration</h1>
-            <p class="integration-subtitle">Integrate Bonktah with your applications using our API and webhook system</p>
+            <p class="integration-subtitle">Build amazing experiences with our powerful API and developer tools</p>
             <div class="quick-links">
                 <a href="#api" class="quick-link">API Docs</a>
                 <a href="#webhooks" class="quick-link">Webhooks</a>
                 <a href="#examples" class="quick-link">Examples</a>
+                <a href="https://github.com/bonktah/sdk" class="quick-link">SDKs</a>
             </div>
         </div>
 
-        <div class="section" id="api">
-            <h2 class="section-title">🔌 API Documentation</h2>
+        <div class="section" id="overview">
+            <h2 class="section-title"><span class="icon">🚀</span> Overview</h2>
             <div class="section-content">
-                <p>Integrate Bonktah into your applications using our REST API. Built on ElizaOS architecture with custom endpoints for Bonktah-specific features.</p>
+                <p>The Bonktah API allows you to integrate our meme-savvy AI into your applications. Built on ElizaOS architecture with custom endpoints for Bonktah-specific features, our API provides:</p>
                 
-                <h3 style="margin: 25px 0 15px 0; color: #ffd700;">Authentication</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0;">
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 10px;">💬 Real-time Chat</h4>
+                        <p style="font-size: 0.95rem; opacity: 0.8;">Connect users with Bonktah for engaging conversations about crypto, memes, and life</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h4 style="color: var(--accent-green); margin-bottom: 10px;">🧠 Conscience Access</h4>
+                        <p style="font-size: 0.95rem; opacity: 0.8;">Retrieve and showcase community-voted best conversations</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h4 style="color: var(--accent-purple); margin-bottom: 10px;">🔌 Easy Integration</h4>
+                        <p style="font-size: 0.95rem; opacity: 0.8;">SDKs for popular languages and frameworks make integration a breeze</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="authentication">
+            <h2 class="section-title"><span class="icon">🔐</span> Authentication</h2>
+            <div class="section-content">
+                <p>All API requests require authentication using an API key. Include your key in the Authorization header:</p>
+                
                 <div class="code-block">
                     <div class="code-header">
-                        <span class="code-lang">Authorization Header</span>
-                        <button class="copy-btn" onclick="copyToClipboard('auth-header')">Copy</button>
+                        <span class="code-lang">HTTP Header</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre id="auth-header"><code>Authorization: Bearer YOUR_API_KEY
+                    <pre><code>Authorization: Bearer YOUR_API_KEY
 Content-Type: application/json</code></pre>
                 </div>
                 
-                <h3 style="margin: 25px 0 15px 0; color: #ffd700;">Core Endpoints</h3>
+                <div class="warning-box">
+                    <div class="warning-title">🔑 Keep Your API Key Secure</div>
+                    <p>Never expose your API key in client-side code or public repositories. Use environment variables and server-side requests to keep your key safe.</p>
+                </div>
+                
+                <h3 style="margin: 30px 0 15px; color: var(--accent-blue);">Getting Your API Key</h3>
+                <ol class="step-list">
+                    <li class="step-item">
+                        <div class="step-title">Create a Bonktah Account</div>
+                        <div class="step-content">
+                            Sign up at <a href="https://bonktah.ai/signup" style="color: var(--accent-blue);">bonktah.ai/signup</a> using your email or social login
+                        </div>
+                    </li>
+                    <li class="step-item">
+                        <div class="step-title">Navigate to API Settings</div>
+                        <div class="step-content">
+                            Go to your dashboard and click on "API Keys" in the developer section
+                        </div>
+                    </li>
+                    <li class="step-item">
+                        <div class="step-title">Generate Your Key</div>
+                        <div class="step-content">
+                            Click "Create New Key", give it a descriptive name, and copy the generated key immediately
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="chat-api">
+            <h2 class="section-title"><span class="icon">💬</span> Chat API</h2>
+            <div class="section-content">
+                <p>Send messages to Bonktah and receive AI-powered responses with personality and context awareness.</p>
                 
                 <div class="endpoint-card">
-                    <div>
+                    <div class="endpoint-header">
                         <span class="endpoint-method post">POST</span>
                         <span class="endpoint-url">/api/v1/chat</span>
                     </div>
-                    <p style="margin: 10px 0;"><strong>Send a message to Bonktah</strong></p>
+                    <p class="endpoint-description">Send a message to Bonktah and receive a response</p>
+                    
+                    <h4 style="margin: 20px 0 15px; color: var(--accent-blue);">Request Body</h4>
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-lang">Request Body</span>
+                            <span class="code-lang">JSON</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
                         <pre><code>{
   "message": "Hey Bonktah, what's your take on meme coins?",
@@ -417,47 +935,239 @@ Content-Type: application/json</code></pre>
   "sessionId": "session_abc123",
   "context": {
     "platform": "api",
-    "channel": "general"
+    "channel": "general",
+    "previousMessageCount": 5
+  },
+  "options": {
+    "temperature": 0.8,
+    "saveToConscience": true,
+    "personalityMode": "casual"
   }
 }</code></pre>
                     </div>
+                    
+                    <h4 style="margin: 20px 0 15px; color: var(--accent-blue);">Parameters</h4>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">message</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="param-required">Required</span></td>
+                                <td>The message to send to Bonktah</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">userId</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="param-required">Required</span></td>
+                                <td>Unique identifier for the user</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">sessionId</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="param-optional">Optional</span></td>
+                                <td>Session identifier for conversation continuity</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">context</span></td>
+                                <td><span class="param-type">object</span></td>
+                                <td><span class="param-optional">Optional</span></td>
+                                <td>Additional context for the conversation</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">options</span></td>
+                                <td><span class="param-type">object</span></td>
+                                <td><span class="param-optional">Optional</span></td>
+                                <td>Configuration options for response generation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 style="margin: 20px 0 15px; color: var(--accent-green);">Response</h4>
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-lang">Response</span>
+                            <span class="code-lang">JSON</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
                         <pre><code>{
-  "response": "Meme coins are the wild west of crypto! 🤠 They bring fun...",
+  "response": "Meme coins are the wild west of crypto! 🤠 They bring fun and community to finance...",
   "messageId": "msg_789xyz",
   "timestamp": "2025-05-24T12:00:00Z",
   "personality": "casual",
-  "saveToConscience": true
+  "saveToConscience": true,
+  "sentiment": "positive",
+  "topics": ["crypto", "meme-coins", "community"],
+  "usage": {
+    "tokensUsed": 125,
+    "remainingTokens": 99875
+  }
 }</code></pre>
                     </div>
                 </div>
                 
-                <div class="endpoint-card">
-                    <div>
-                        <span class="endpoint-method">GET</span>
-                        <span class="endpoint-url">/api/v1/conscience</span>
-                    </div>
-                    <p style="margin: 10px 0;"><strong>Retrieve conversation history</strong></p>
+                <div class="tabs-container">
+                    <button class="tab-button active" onclick="showTab('curl-example')">cURL</button>
+                    <button class="tab-button" onclick="showTab('nodejs-example')">Node.js</button>
+                    <button class="tab-button" onclick="showTab('python-example')">Python</button>
+                </div>
+                
+                <div id="curl-example" class="tab-content active">
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-lang">Query Parameters</span>
+                            <span class="code-lang">cURL</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
-                        <pre><code>?limit=10&sort=recent&category=crypto&minUpvotes=5</code></pre>
+                        <pre><code>curl -X POST https://api.bonktah.ai/v1/chat \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Hey Bonktah, what'\''s your take on meme coins?",
+    "userId": "user_12345",
+    "sessionId": "session_abc123"
+  }'</code></pre>
                     </div>
                 </div>
                 
+                <div id="nodejs-example" class="tab-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">Node.js</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>const axios = require('axios');
+
+const response = await axios.post('https://api.bonktah.ai/v1/chat', {
+  message: "Hey Bonktah, what's your take on meme coins?",
+  userId: 'user_12345',
+  sessionId: 'session_abc123',
+  context: {
+    platform: 'api',
+    channel: 'general'
+  }
+}, {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  }
+});
+
+console.log(response.data.response);</code></pre>
+                    </div>
+                </div>
+                
+                <div id="python-example" class="tab-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">Python</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>import requests
+
+response = requests.post(
+    'https://api.bonktah.ai/v1/chat',
+    json={
+        'message': "Hey Bonktah, what's your take on meme coins?",
+        'userId': 'user_12345',
+        'sessionId': 'session_abc123',
+        'context': {
+            'platform': 'api',
+            'channel': 'general'
+        }
+    },
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    }
+)
+
+print(response.json()['response'])</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="conscience-api">
+            <h2 class="section-title"><span class="icon">🧠</span> Conscience API</h2>
+            <div class="section-content">
+                <p>Access Bonktah's collective memory of conversations, retrieve popular discussions, and contribute to the community knowledge base.</p>
+                
                 <div class="endpoint-card">
-                    <div>
+                    <div class="endpoint-header">
+                        <span class="endpoint-method">GET</span>
+                        <span class="endpoint-url">/api/v1/conscience</span>
+                    </div>
+                    <p class="endpoint-description">Retrieve conversations from Bonktah's conscience</p>
+                    
+                    <h4 style="margin: 20px 0 15px; color: var(--accent-blue);">Query Parameters</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">URL Parameters</span>
+                        </div>
+                        <pre><code>?limit=10&sort=recent&category=crypto&minUpvotes=5&search=defi</code></pre>
+                    </div>
+                    
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">limit</span></td>
+                                <td><span class="param-type">integer</span></td>
+                                <td>10</td>
+                                <td>Number of conversations to return (max: 50)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">sort</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td>recent</td>
+                                <td>Sort order: recent, upvotes, trending</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">category</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td>all</td>
+                                <td>Filter by category: crypto, life, culture, tech</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">minUpvotes</span></td>
+                                <td><span class="param-type">integer</span></td>
+                                <td>0</td>
+                                <td>Minimum upvote count filter</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">search</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td>-</td>
+                                <td>Search query for conversation content</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
                         <span class="endpoint-method post">POST</span>
                         <span class="endpoint-url">/api/v1/conscience/upvote</span>
                     </div>
-                    <p style="margin: 10px 0;"><strong>Upvote a conversation</strong></p>
+                    <p class="endpoint-description">Upvote a conversation in Bonktah's conscience</p>
+                    
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-lang">Request Body</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
                         <pre><code>{
   "conversationId": "conv_12345",
@@ -465,62 +1175,11 @@ Content-Type: application/json</code></pre>
 }</code></pre>
                     </div>
                 </div>
-                
-                <h3 style="margin: 25px 0 15px 0; color: #ffd700;">Rate Limits</h3>
-                <ul>
-                    <li><strong>Chat API:</strong> 60 requests per minute per user</li>
-                    <li><strong>Conscience API:</strong> 100 requests per minute</li>
-                    <li><strong>Bulk operations:</strong> 10 requests per minute</li>
-                </ul>
-                
-                <div class="code-block">
-                    <div class="code-header">
-                        <span class="code-lang">Example: Node.js Implementation</span>
-                        <button class="copy-btn" onclick="copyToClipboard('nodejs-example')">Copy</button>
-                    </div>
-                    <pre id="nodejs-example"><code>const fetch = require('node-fetch');
-
-class BonktahAPI {
-  constructor(apiKey) {
-    this.apiKey = apiKey;
-    this.baseUrl = 'https://api.bonktah.ai/v1';
-  }
-  
-  async chat(message, userId, options = {}) {
-    const response = await fetch(`${this.baseUrl}/chat`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message,
-        userId,
-        sessionId: options.sessionId || this.generateSessionId(),
-        context: options.context || {}
-      })
-    });
-    
-    return await response.json();
-  }
-  
-  generateSessionId() {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-}
-
-// Usage
-const bonktah = new BonktahAPI('your_api_key_here');
-
-bonktah.chat('Tell me about DeFi', 'user123')
-  .then(response => console.log(response.response))
-  .catch(error => console.error('Error:', error));</code></pre>
-                </div>
             </div>
         </div>
 
         <div class="section" id="webhooks">
-            <h2 class="section-title">🔗 Webhook Setup</h2>
+            <h2 class="section-title"><span class="icon">🔗</span> Webhook Setup</h2>
             <div class="section-content">
                 <p>Set up webhooks to receive real-time notifications about Bonktah interactions, new conscience entries, and system events.</p>
                 
@@ -528,16 +1187,17 @@ bonktah.chat('Tell me about DeFi', 'user123')
                     <li class="step-item">
                         <div class="step-title">Configure Webhook URL</div>
                         <div class="step-content">
-                            <p>Set up your endpoint to receive webhook events:</p>
+                            <p>Register your webhook endpoint to receive events:</p>
                             <div class="code-block">
                                 <div class="code-header">
-                                    <span class="code-lang">POST</span>
-                                    <span>/api/v1/webhooks/register</span>
+                                    <span class="code-lang">POST /api/v1/webhooks/register</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                                 </div>
                                 <pre><code>{
   "url": "https://yourdomain.com/bonktah-webhook",
   "events": ["chat.message", "conscience.new", "conscience.upvote"],
-  "secret": "your_webhook_secret"
+  "secret": "your_webhook_secret",
+  "description": "Production webhook for chat events"
 }</code></pre>
                             </div>
                         </div>
@@ -550,6 +1210,7 @@ bonktah.chat('Tell me about DeFi', 'user123')
                             <div class="code-block">
                                 <div class="code-header">
                                     <span class="code-lang">Webhook Payload</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                                 </div>
                                 <pre><code>{
   "event": "chat.message",
@@ -571,13 +1232,13 @@ bonktah.chat('Tell me about DeFi', 'user123')
                     <li class="step-item">
                         <div class="step-title">Verify Webhook Signatures</div>
                         <div class="step-content">
-                            <p>Always verify webhook authenticity:</p>
+                            <p>Always verify webhook authenticity using HMAC-SHA256:</p>
                             <div class="code-block">
                                 <div class="code-header">
                                     <span class="code-lang">Node.js Verification</span>
-                                    <button class="copy-btn" onclick="copyToClipboard('webhook-verify')">Copy</button>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                                 </div>
-                                <pre id="webhook-verify"><code>const crypto = require('crypto');
+                                <pre><code>const crypto = require('crypto');
 
 function verifyWebhookSignature(payload, signature, secret) {
   const expectedSignature = crypto
@@ -605,6 +1266,17 @@ app.post('/bonktah-webhook', express.raw({type: 'application/json'}), (req, res)
   const event = JSON.parse(payload);
   console.log('Received event:', event.event, event.data);
   
+  // Process the event
+  switch(event.event) {
+    case 'chat.message':
+      handleChatMessage(event.data);
+      break;
+    case 'conscience.new':
+      handleNewConscience(event.data);
+      break;
+    // ... handle other events
+  }
+  
   res.status(200).send('OK');
 });</code></pre>
                             </div>
@@ -612,28 +1284,39 @@ app.post('/bonktah-webhook', express.raw({type: 'application/json'}), (req, res)
                     </li>
                 </ol>
                 
-                <h3 style="margin: 25px 0 15px 0; color: #ffd700;">Available Events</h3>
-                <ul>
-                    <li><strong>chat.message:</strong> New conversation with Bonktah</li>
-                    <li><strong>conscience.new:</strong> Conversation saved to conscience</li>
-                    <li><strong>conscience.upvote:</strong> Conversation received an upvote</li>
-                    <li><strong>user.join:</strong> New user starts chatting with Bonktah</li>
-                    <li><strong>system.error:</strong> System errors or rate limit hits</li>
-                </ul>
+                <h3 style="margin: 30px 0 20px; color: var(--accent-blue);">Available Events</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--accent-green); margin-bottom: 10px;">💬 chat.message</h4>
+                        <p style="font-size: 0.95rem; opacity: 0.8;">New conversation with Bonktah</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--accent-purple); margin-bottom: 10px;">🧠 conscience.new</h4>
+                        <p style="font-size: 0.95rem; opacity: 0.8;">Conversation saved to conscience</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--accent-orange); margin-bottom: 10px;">⬆️ conscience.upvote</h4>
+                        <p style="font-size: 0.95rem; opacity: 0.8;">Conversation received an upvote</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 10px;">👤 user.join</h4>
+                        <p style="font-size: 0.95rem; opacity: 0.8;">New user starts chatting</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="section" id="examples">
-            <h2 class="section-title">💡 Integration Examples</h2>
+            <h2 class="section-title"><span class="icon">💡</span> Integration Examples</h2>
             <div class="section-content">
-                <h3 style="margin: 0 0 15px 0; color: #ffd700;">Discord Bot with Custom Commands</h3>
+                <h3 style="margin: 0 0 20px 0; color: var(--accent-purple);">Discord Bot Integration</h3>
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-lang">JavaScript</span>
-                        <button class="copy-btn" onclick="copyToClipboard('discord-bot')">Copy</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre id="discord-bot"><code>const { Client, GatewayIntentBits } = require('discord.js');
-const BonktahAPI = require('./bonktah-api');
+                    <pre><code>const { Client, GatewayIntentBits } = require('discord.js');
+const BonktahAPI = require('@bonktah/sdk');
 
 const client = new Client({ 
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] 
@@ -645,123 +1328,306 @@ client.on('messageCreate', async (message) => {
   
   // Respond to mentions
   if (message.mentions.has(client.user)) {
-    const response = await bonktah.chat(
-      message.content.replace(`<@${client.user.id}>`, '').trim(),
-      message.author.id,
-      {
+    const typing = message.channel.sendTyping();
+    
+    try {
+      const response = await bonktah.chat({
+        message: message.content.replace(`<@${client.user.id}>`, '').trim(),
+        userId: message.author.id,
         context: {
           platform: 'discord',
           guild: message.guild.name,
-          channel: message.channel.name
+          channel: message.channel.name,
+          username: message.author.username
         }
+      });
+      
+      await message.reply(response.response);
+      
+      // React with emoji based on sentiment
+      if (response.sentiment === 'positive') {
+        await message.react('🚀');
       }
-    );
-    
-    message.reply(response.response);
+    } catch (error) {
+      console.error('Bonktah API error:', error);
+      await message.reply('Oops! My circuits are a bit scrambled right now. Try again in a moment! 🤖');
+    }
   }
 });
 
 client.login(process.env.DISCORD_TOKEN);</code></pre>
                 </div>
                 
-                <h3 style="margin: 25px 0 15px 0; color: #ffd700;">React Chat Component</h3>
+                <h3 style="margin: 30px 0 20px 0; color: var(--accent-blue);">React Chat Component</h3>
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-lang">React + TypeScript</span>
-                        <button class="copy-btn" onclick="copyToClipboard('react-chat')">Copy</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre id="react-chat"><code>import React, { useState } from 'react';
+                    <pre><code>import React, { useState, useEffect } from 'react';
+import { BonktahClient } from '@bonktah/react';
 
-const BonktahChat: React.FC = () => {
-  const [messages, setMessages] = useState([]);
+interface Message {
+  id: string;
+  author: 'user' | 'bonktah';
+  content: string;
+  timestamp: Date;
+}
+
+export const BonktahChat: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   
+  const bonktah = new BonktahClient({
+    apiKey: process.env.REACT_APP_BONKTAH_API_KEY,
+    onMessage: (message) => {
+      setMessages(prev => [...prev, {
+        id: message.id,
+        author: 'bonktah',
+        content: message.response,
+        timestamp: new Date(message.timestamp)
+      }]);
+    }
+  });
+  
   const sendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
     
     setLoading(true);
-    const userMessage = { author: 'user', content: input, timestamp: new Date() };
+    
+    // Add user message
+    const userMessage = {
+      id: `user_${Date.now()}`,
+      author: 'user' as const,
+      content: input,
+      timestamp: new Date()
+    };
+    
     setMessages(prev => [...prev, userMessage]);
+    setInput('');
     
     try {
-      const response = await fetch('/api/bonktah/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: input,
-          userId: 'web_user_123'
-        })
-      });
-      
-      const data = await response.json();
-      const botMessage = { 
-        author: 'bonktah', 
-        content: data.response, 
-        timestamp: new Date() 
-      };
-      
-      setMessages(prev => [...prev, botMessage]);
+      await bonktah.sendMessage(input);
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Failed to send message:', error);
+      // Show error state
+    } finally {
+      setLoading(false);
     }
-    
-    setInput('');
-    setLoading(false);
   };
   
   return (
-    &lt;div className="bonktah-chat"&gt;
-      &lt;div className="messages"&gt;
-        {messages.map((msg, i) => (
-          &lt;div key={i} className={`message ${msg.author}`}&gt;
-            &lt;strong&gt;{msg.author}:&lt;/strong&gt; {msg.content}
-          &lt;/div&gt;
+    <div className="bonktah-chat">
+      <div className="messages">
+        {messages.map((msg) => (
+          <div key={msg.id} className={`message ${msg.author}`}>
+            <div className="message-bubble">
+              <strong>{msg.author === 'user' ? 'You' : 'Bonktah'}:</strong>
+              <p>{msg.content}</p>
+              <time>{msg.timestamp.toLocaleTimeString()}</time>
+            </div>
+          </div>
         ))}
-      &lt;/div&gt;
-      &lt;div className="input-area"&gt;
-        &lt;input 
+        {loading && (
+          <div className="typing-indicator">
+            <span>Bonktah is typing</span>
+            <span className="dots">...</span>
+          </div>
+        )}
+      </div>
+      
+      <div className="input-area">
+        <input 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
           placeholder="Chat with Bonktah..."
           disabled={loading}
-        /&gt;
-        &lt;button onClick={sendMessage} disabled={loading}&gt;
+        />
+        <button onClick={sendMessage} disabled={loading || !input.trim()}>
           {loading ? '...' : 'Send'}
-        &lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+        </button>
+      </div>
+    </div>
   );
 };</code></pre>
                 </div>
                 
+                <div class="success-box">
+                    <h3 style="margin: 0 0 15px; color: var(--accent-green);">🎉 Ready to Build?</h3>
+                    <p>Check out our complete example projects on GitHub:</p>
+                    <ul style="margin-top: 15px;">
+                        <li><a href="https://github.com/bonktah/examples/discord-bot" style="color: var(--accent-green);">Discord Bot Starter</a></li>
+                        <li><a href="https://github.com/bonktah/examples/react-app" style="color: var(--accent-green);">React Chat App</a></li>
+                        <li><a href="https://github.com/bonktah/examples/telegram-bot" style="color: var(--accent-green);">Telegram Bot</a></li>
+                        <li><a href="https://github.com/bonktah/examples/python-cli" style="color: var(--accent-green);">Python CLI Tool</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="rate-limits">
+            <h2 class="section-title"><span class="icon">⚡</span> Rate Limits & Best Practices</h2>
+            <div class="section-content">
+                <h3 style="margin: 0 0 20px; color: var(--accent-orange);">Rate Limits</h3>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Endpoint</th>
+                            <th>Limit</th>
+                            <th>Window</th>
+                            <th>Burst</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chat API</td>
+                            <td>60 requests</td>
+                            <td>Per minute</td>
+                            <td>10 requests</td>
+                        </tr>
+                        <tr>
+                            <td>Conscience API</td>
+                            <td>100 requests</td>
+                            <td>Per minute</td>
+                            <td>20 requests</td>
+                        </tr>
+                        <tr>
+                            <td>Webhook Registration</td>
+                            <td>10 requests</td>
+                            <td>Per hour</td>
+                            <td>2 requests</td>
+                        </tr>
+                        <tr>
+                            <td>Bulk Operations</td>
+                            <td>10 requests</td>
+                            <td>Per minute</td>
+                            <td>2 requests</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 style="margin: 30px 0 20px; color: var(--accent-green);">Best Practices</h3>
+                <ul>
+                    <li><strong>Use Session IDs:</strong> Maintain conversation context by using consistent session IDs</li>
+                    <li><strong>Implement Retry Logic:</strong> Use exponential backoff for failed requests</li>
+                    <li><strong>Cache Responses:</strong> Cache conscience queries to reduce API calls</li>
+                    <li><strong>Handle Errors Gracefully:</strong> Always provide fallback behavior for API failures</li>
+                    <li><strong>Monitor Usage:</strong> Track your API usage through the dashboard</li>
+                    <li><strong>Optimize Webhooks:</strong> Process webhook events asynchronously</li>
+                </ul>
+                
                 <div class="warning-box">
-                    <div class="warning-title">🔧 Need Help?</div>
-                    <p>Check out our <a href="#" style="color: #ffd700;">GitHub repository</a> for more examples, or join our <a href="#" style="color: #ffd700;">Discord community</a> for integration support. We're always happy to help developers get Bonktah working in their projects!</p>
+                    <div class="warning-title">🚨 Rate Limit Headers</div>
+                    <p>Check response headers to monitor your rate limit status:</p>
+                    <ul style="margin-top: 10px;">
+                        <li><code>X-RateLimit-Limit</code> - Your rate limit</li>
+                        <li><code>X-RateLimit-Remaining</code> - Requests remaining</li>
+                        <li><code>X-RateLimit-Reset</code> - When the limit resets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="support">
+            <h2 class="section-title"><span class="icon">🛟</span> Getting Help</h2>
+            <div class="section-content">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h3 style="color: var(--accent-blue); margin-bottom: 15px;">📚 Documentation</h3>
+                        <p>Comprehensive guides and API reference</p>
+                        <a href="https://docs.bonktah.ai" style="color: var(--accent-blue); text-decoration: none; display: inline-block; margin-top: 10px;">View Docs →</a>
+                    </div>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h3 style="color: var(--accent-purple); margin-bottom: 15px;">💬 Discord Community</h3>
+                        <p>Join our developer community for help and discussions</p>
+                        <a href="https://discord.gg/bonktah" style="color: var(--accent-purple); text-decoration: none; display: inline-block; margin-top: 10px;">Join Discord →</a>
+                    </div>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h3 style="color: var(--accent-green); margin-bottom: 15px;">🐛 GitHub Issues</h3>
+                        <p>Report bugs or request features</p>
+                        <a href="https://github.com/bonktah/api/issues" style="color: var(--accent-green); text-decoration: none; display: inline-block; margin-top: 10px;">Open Issue →</a>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px; text-align: center; padding: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 16px;">
+                    <h3 style="color: var(--accent-orange); margin-bottom: 15px;">🚀 Ready to start building?</h3>
+                    <p style="font-size: 1.1rem; opacity: 0.9;">Get your API key and join thousands of developers creating with Bonktah!</p>
+                    <a href="https://bonktah.ai/signup" style="display: inline-block; margin-top: 20px; padding: 15px 30px; background: linear-gradient(135deg, var(--accent-orange), var(--accent-red)); color: white; text-decoration: none; border-radius: 30px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(255, 152, 0, 0.4)';" onmouseout="this.style.transform=''; this.style.boxShadow='0 10px 25px rgba(255, 152, 0, 0.3)';">
+                        Get Started Free
+                    </a>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        function copyToClipboard(elementId) {
-            const element = document.getElementById(elementId);
-            const text = element.textContent;
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(item.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Update active state
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Update nav active state on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navItems = document.querySelectorAll('.nav-item');
             
-            navigator.clipboard.writeText(text).then(() => {
-                // Show temporary feedback
-                const button = event.target;
+            sections.forEach((section) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    const id = section.getAttribute('id');
+                    navItems.forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('href') === `#${id}`) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Tab functionality
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
                 const originalText = button.textContent;
                 button.textContent = 'Copied!';
-                button.style.background = 'rgba(76, 175, 80, 0.3)';
+                button.classList.add('copied');
                 
                 setTimeout(() => {
                     button.textContent = originalText;
-                    button.style.background = 'rgba(255, 255, 255, 0.2)';
+                    button.classList.remove('copied');
                 }, 2000);
             }).catch(err => {
-                console.error('Failed to copy text: ', err);
+                console.error('Failed to copy:', err);
             });
         }
     </script>
