@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bonktah - Disclaimer</title>
-    <link rel="icon" type="" href="bonk.jpg">
+    <title>Bonktah - Legal Disclaimer & Terms</title>
+    <link rel="icon" type="image/jpeg" href="bonk.jpg">
     <style>
         * {
             margin: 0;
@@ -12,14 +12,59 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --warning-red: #ff6b6b;
+            --warning-bg: rgba(255, 107, 107, 0.1);
+            --info-blue: #4dabf7;
+            --info-bg: rgba(77, 171, 247, 0.1);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ff7b00 0%, #ff9500 50%, #ffb366 100%);
+            background: var(--primary-gradient);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             color: white;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255, 107, 107, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(77, 171, 247, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .header {
@@ -28,35 +73,40 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            z-index: 10;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 20px;
+            gap: 12px;
+            font-size: 22px;
             font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateX(-5px);
         }
 
         .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px dashed rgba(255, 255, 255, 0.5);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 10px;
-            font-weight: normal;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 10px 24px;
             border-radius: 25px;
             color: white;
             text-decoration: none;
@@ -65,12 +115,13 @@
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .main-content {
@@ -78,112 +129,318 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             max-width: 1000px;
             width: 100%;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .disclaimer-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 50px;
             width: 100%;
-            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .disclaimer-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--warning-red), var(--info-blue), var(--warning-red));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .disclaimer-title {
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-size: 3rem;
+            font-weight: 800;
             text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .disclaimer-content {
             font-size: 1.1rem;
             line-height: 1.8;
-            opacity: 0.95;
+            color: var(--text-secondary);
         }
 
         .disclaimer-section {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .section-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .icon {
+            font-size: 1.3em;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         .section-content {
             margin-bottom: 15px;
+            padding-left: 20px;
         }
 
         .warning-box {
-            background: rgba(255, 0, 0, 0.1);
-            border: 2px solid rgba(255, 100, 100, 0.4);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 25px 0;
+            background: var(--warning-bg);
+            border: 2px solid rgba(255, 107, 107, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .warning-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            font-size: 120px;
+            opacity: 0.05;
         }
 
         .warning-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--warning-red);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-box {
+            background: var(--info-bg);
+            border: 2px solid rgba(77, 171, 247, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-box::before {
+            content: 'ℹ️';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            font-size: 80px;
+            opacity: 0.05;
+        }
+
+        .info-title {
             font-size: 1.3rem;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #ffcccc;
+            margin-bottom: 12px;
+            color: var(--info-blue);
+        }
+
+        ul {
+            margin: 20px 0;
+            padding-left: 30px;
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        li strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .emoji {
+            font-size: 1.3em;
+            margin-right: 8px;
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .disclaimer-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+
+        .accept-section {
+            margin-top: 40px;
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .accept-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--info-blue), #339af0);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(77, 171, 247, 0.3);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accept-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .accept-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .accept-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(77, 171, 247, 0.4);
+        }
+
+        .accept-btn span {
+            position: relative;
+            z-index: 1;
         }
 
         .floating-elements {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 1;
+            z-index: 0;
         }
 
         .floating-element {
             position: absolute;
-            background: rgba(255, 255, 255, 0.05);
             border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
+            animation: float 20s ease-in-out infinite;
+            filter: blur(2px);
         }
 
         .floating-element:nth-child(1) {
-            width: 60px;
-            height: 60px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.03) 0%, transparent 70%);
             top: 10%;
             left: 5%;
             animation-delay: 0s;
         }
 
         .floating-element:nth-child(2) {
-            width: 40px;
-            height: 40px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(77, 171, 247, 0.03) 0%, transparent 70%);
             top: 70%;
             right: 10%;
-            animation-delay: 3s;
+            animation-delay: 5s;
         }
 
         .floating-element:nth-child(3) {
-            width: 80px;
-            height: 80px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
             top: 40%;
             right: 20%;
-            animation-delay: 6s;
+            animation-delay: 10s;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-40px) translateX(40px) rotate(90deg); 
+            }
+            50% { 
+                transform: translateY(40px) translateX(-40px) rotate(180deg); 
+            }
+            75% { 
+                transform: translateY(-20px) translateX(-20px) rotate(270deg); 
+            }
         }
 
         @media (max-width: 768px) {
@@ -192,7 +449,7 @@
             }
             
             .disclaimer-container {
-                padding: 25px;
+                padding: 30px 20px;
             }
             
             .disclaimer-title {
@@ -202,20 +459,72 @@
             .disclaimer-content {
                 font-size: 1rem;
             }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .warning-box,
+            .info-box {
+                padding: 20px;
+            }
         }
 
-        .emoji {
-            font-size: 1.2em;
-            margin-right: 5px;
+        /* Highlight important terms */
+        .highlight {
+            background: rgba(255, 215, 0, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ffd700;
+            font-weight: 600;
         }
 
-        ul {
-            margin: 15px 0;
-            padding-left: 25px;
+        /* Accordion for detailed sections */
+        .accordion {
+            margin: 20px 0;
         }
 
-        li {
-            margin-bottom: 8px;
+        .accordion-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 20px;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+            padding: 0 20px 20px;
         }
     </style>
 </head>
@@ -228,9 +537,9 @@
 
     <header class="header">
         <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
-    <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
-    BONKTAH
-</a>
+            <img src="bonk.jpg" alt="Bonktah Logo" class="logo-icon">
+            BONKTAH
+        </a>
         <a href="bonktah-conscience.html" class="back-btn">← Back to Conscience</a>
     </header>
 
@@ -241,99 +550,160 @@
             <div class="disclaimer-content">
                 <div class="warning-box">
                     <div class="warning-title">🤖 AI-Generated Content Warning</div>
-                    <p>Bonktah is an artificial intelligence chatbot. All conversations and responses are AI-generated and should NOT be taken as professional advice, financial guidance, or factual information.</p>
+                    <p>Bonktah is an artificial intelligence chatbot powered by advanced language models. All conversations and responses are AI-generated and should <span class="highlight">NOT</span> be taken as professional advice, financial guidance, or factual information.</p>
                 </div>
 
                 <div class="disclaimer-section">
-                    <h2 class="section-title"><span class="emoji">🎭</span>Entertainment Purpose Only</h2>
+                    <h2 class="section-title"><span class="icon">🎭</span>Entertainment Purpose Only</h2>
                     <div class="section-content">
                         <p>This AI bot is designed purely for entertainment, casual conversation, and creative interaction. Any advice, opinions, or information provided should be considered as:</p>
                         <ul>
-                            <li>Conversational content for fun</li>
-                            <li>Creative writing or roleplay</li>
-                            <li>General discussion topics</li>
-                            <li>NOT professional or expert advice</li>
+                            <li><strong>Conversational content</strong> for fun and engagement</li>
+                            <li><strong>Creative writing</strong> or roleplay scenarios</li>
+                            <li><strong>General discussion</strong> topics without authoritative backing</li>
+                            <li><strong>NOT professional</strong> or expert advice in any field</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="disclaimer-section">
-                    <h2 class="section-title"><span class="emoji">💰</span>No Financial Advice</h2>
+                    <h2 class="section-title"><span class="icon">💰</span>No Financial Advice</h2>
                     <div class="section-content">
-                        <p>Bonktah does NOT provide financial advice. Any mentions of cryptocurrencies, investments, meme coins, or financial strategies are:</p>
+                        <p>Bonktah does <span class="highlight">NOT</span> provide financial advice. Any mentions of cryptocurrencies, investments, meme coins, or financial strategies are:</p>
                         <ul>
-                            <li>For entertainment discussion only</li>
-                            <li>Not investment recommendations</li>
-                            <li>Not financial planning guidance</li>
-                            <li>Always consult licensed financial professionals for real advice</li>
+                            <li><strong>For entertainment</strong> discussion only</li>
+                            <li><strong>Not investment</strong> recommendations</li>
+                            <li><strong>Not financial</strong> planning guidance</li>
+                            <li><strong>Always consult</strong> licensed financial professionals for real advice</li>
                         </ul>
+                        <div class="info-box">
+                            <div class="info-title">💡 Remember</div>
+                            <p>Cryptocurrency and meme coin discussions are for fun! Real financial decisions require real financial advisors.</p>
+                        </div>
                     </div>
                 </div>
 
                 <div class="disclaimer-section">
-                    <h2 class="section-title"><span class="emoji">🏥</span>No Medical or Professional Advice</h2>
+                    <h2 class="section-title"><span class="icon">🏥</span>No Medical or Professional Advice</h2>
                     <div class="section-content">
                         <p>This AI cannot provide:</p>
                         <ul>
-                            <li>Medical diagnosis or treatment advice</li>
-                            <li>Legal counsel or recommendations</li>
-                            <li>Professional therapy or mental health treatment</li>
-                            <li>Any advice requiring professional licensing</li>
+                            <li><strong>Medical diagnosis</strong> or treatment advice</li>
+                            <li><strong>Legal counsel</strong> or recommendations</li>
+                            <li><strong>Professional therapy</strong> or mental health treatment</li>
+                            <li><strong>Any advice</strong> requiring professional licensing</li>
                         </ul>
                         <p>For serious matters, always consult qualified professionals in the relevant field.</p>
                     </div>
                 </div>
 
-                <div class="disclaimer-section">
-                    <h2 class="section-title"><span class="emoji">🎯</span>Accuracy and Reliability</h2>
-                    <div class="section-content">
-                        <p>AI-generated responses may contain:</p>
-                        <ul>
-                            <li>Inaccurate or outdated information</li>
-                            <li>Creative interpretations rather than facts</li>
-                            <li>Biased or incomplete perspectives</li>
-                            <li>Fictional elements presented conversationally</li>
-                        </ul>
-                        <p>Always verify important information through reliable, official sources.</p>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span><span class="icon">🎯</span> Accuracy and Reliability</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>AI-generated responses may contain:</p>
+                            <ul>
+                                <li><strong>Inaccurate</strong> or outdated information</li>
+                                <li><strong>Creative interpretations</strong> rather than facts</li>
+                                <li><strong>Biased</strong> or incomplete perspectives</li>
+                                <li><strong>Fictional elements</strong> presented conversationally</li>
+                            </ul>
+                            <p>Always verify important information through reliable, official sources.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span><span class="icon">🔒</span> Privacy and Data</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>Conversations with this AI bot:</p>
+                            <ul>
+                                <li><strong>May be stored</strong> or logged for improvement</li>
+                                <li><strong>Should not include</strong> personal sensitive information</li>
+                                <li><strong>Are not private</strong> or confidential</li>
+                                <li><strong>May be used</strong> to improve the AI system</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span><span class="icon">✨</span> Use Responsibly</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>Enjoy chatting with Bonktah, but remember:</p>
+                            <ul>
+                                <li>This is <strong>AI entertainment</strong>, not human expertise</li>
+                                <li>Use <strong>common sense</strong> and critical thinking</li>
+                                <li>Seek <strong>appropriate professional help</strong> for serious matters</li>
+                                <li>Have fun, but <strong>stay grounded</strong> in reality!</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <div class="disclaimer-section">
-                    <h2 class="section-title"><span class="emoji">🔒</span>Privacy and Data</h2>
-                    <div class="section-content">
-                        <p>Conversations with this AI bot:</p>
-                        <ul>
-                            <li>May be stored or logged</li>
-                            <li>Should not include personal sensitive information</li>
-                            <li>Are not private or confidential</li>
-                            <li>May be used to improve the AI system</li>
-                        </ul>
-                    </div>
+                <div class="accept-section">
+                    <h3 style="margin-bottom: 15px; color: var(--info-blue);">By using Bonktah, you acknowledge:</h3>
+                    <p>You understand these limitations and will not rely on AI-generated content for important decisions.</p>
+                    <a href="index.html" class="accept-btn">
+                        <span>I Understand & Accept</span>
+                    </a>
                 </div>
 
-                <div class="disclaimer-section">
-                    <h2 class="section-title"><span class="emoji">✨</span>Use Responsibly</h2>
-                    <div class="section-content">
-                        <p>Enjoy chatting with Bonktah, but remember:</p>
-                        <ul>
-                            <li>This is AI entertainment, not human expertise</li>
-                            <li>Use common sense and critical thinking</li>
-                            <li>Seek appropriate professional help for serious matters</li>
-                            <li>Have fun, but stay grounded in reality!</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="warning-box">
-                    <p><strong>By using this AI bot, you acknowledge that you understand these limitations and will not rely on AI-generated content for important decisions.</strong></p>
-                </div>
-
-                <div style="text-align: center; margin-top: 30px; font-size: 0.9rem; opacity: 0.8;">
-                    <p>Last updated: May 2025</p>
-                    <p>Questions? Contact us through our official channels.</p>
+                <div class="disclaimer-footer">
+                    <p class="footer-text">
+                        Last updated: May 2025<br>
+                        Questions? Contact us through our official channels.<br>
+                        <a href="mailto:legal@bonktah.ai" style="color: var(--info-blue); text-decoration: none;">legal@bonktah.ai</a>
+                    </p>
                 </div>
             </div>
         </div>
     </main>
+
+    <script>
+        function toggleAccordion(element) {
+            const accordionItem = element.parentElement;
+            const allItems = document.querySelectorAll('.accordion-item');
+            
+            // Close all other items
+            allItems.forEach(item => {
+                if (item !== accordionItem) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Toggle current item
+            accordionItem.classList.toggle('active');
+        }
+
+        // Add animation to sections as they come into view
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.disclaimer-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease-out';
+            observer.observe(section);
+        });
+    </script>
 </body>
 </html>
